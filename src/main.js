@@ -8,6 +8,9 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
+// 引入icon所需的js文件
+import '@/assets/icon/iconfont.js'
+
 Vue.config.productionTip = false
 
 new Vue({

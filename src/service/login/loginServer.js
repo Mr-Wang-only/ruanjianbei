@@ -1,10 +1,9 @@
 import { request } from '../request'
-import qs from 'qs'
 
 export const isLogin = loginInfo => request(
   {
-    url: 'login',
+    url: 'toLogin',
     method: "post",
-    data: qs.stringify(loginInfo)
+    data: loginInfo
   }
 )

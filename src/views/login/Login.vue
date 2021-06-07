@@ -10,18 +10,18 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="用户名" prop="username">
+        <el-form-item label="用户名" prop="s_name">
           <el-input
             type="text"
-            v-model="ruleForm.username"
+            v-model="ruleForm.s_name"
             autocomplete="off"
             style="width: 300px"
           ></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item label="密码" prop="s_pwd">
           <el-input
             type="password"
-            v-model="ruleForm.password"
+            v-model="ruleForm.s_pwd"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import { isLogin } from "@/service/login/loginServer.js";
+
 export default {
   name: "Login",
   data() {
@@ -55,8 +57,8 @@ export default {
 
     return {
       ruleForm: {
-        username: "",
-        password: "",
+        s_name: "",
+        s_pwd: "",
       },
       rules: {
         username: [{ validator: checkUserName, trigger: "blur" }],
@@ -75,10 +77,18 @@ export default {
             spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.7)",
           });
-          setTimeout(() => {
-            loading.close();
-            this.$router.push('/admin')
-          }, 1000);
+          // 发送登录请求
+          isLogin(this.ruleForm).then((res) => {
+            console.log(res);
+            const { isLogin } = res.data;
+            if (isLogin) {
+              loading.close();
+              this.$router.push("/admin");
+            } else {
+              loading.close();
+              this.$message.error("用户名或者密码错误!")
+            }
+          });
         } else {
           console.log("error submit!!");
           return false;

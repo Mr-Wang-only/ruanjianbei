@@ -3,7 +3,7 @@ module.exports = {
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://lzzzs.top:8080',
+        target: 'http://lzzzs.top:8080/supercode_monkey',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '/'
