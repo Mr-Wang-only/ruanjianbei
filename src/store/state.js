@@ -1,4 +1,5 @@
 export default {
+  tableFields: [],
   //数据表存放的字段   
   arr1: [
     {

@@ -29,3 +29,10 @@ export const getShuJuBiao = data => request(
     data
   }
 )
+export const chongmingm = data => request(
+  {
+    url: 'chongmingm',
+    method: "put",
+    data
+  }
+)

@@ -26,6 +26,7 @@
               :key="index"
               :tableFields="tableColumn"
               :currentIndex="index"
+              @computedType="changeComputedType"
             >
               {{ item.column_name }}
             </field-item>
@@ -74,7 +75,6 @@
 
 <script>
 import { getTableColumn } from "@/service/admin/chartServer.js";
-
 import draggable from "vuedraggable";
 import IconChart from "@/components/charts/IconChart.vue";
 import ChartField from "@/components/charts/ChartField.vue";
@@ -109,7 +109,7 @@ export default {
     WriteChart,
     FieldItem,
   },
-  created() {
+  mounted() {
     const loading = this.$loading({
       lock: true,
       text: "字段加载中...",
@@ -119,15 +119,22 @@ export default {
     this.tableName = this.$route.query.tableName;
     getTableColumn(this.$route.query.tableName).then((res) => {
       const { data } = res;
-      if (data.length === 0) {
-        loading.close();
-        this.$router.push("/admin/charts");
-        this.$message.warning("请先选择数据!");
-      } else {
-        this.tableColumn = data;
-        loading.close();
-      }
+      this.tableColumn = data;
+      // 数字的默认类型是求和
+      data.map((item) => {
+        return item.data_type === "int"
+          ? (item.type = "求和")
+          : (item.type = "");
+      });
+      this.$store.commit("setTableFields", data);
+      loading.close();
     });
+  },
+  watch: {
+    // 监听数据变化 反映到vuex上
+    tableColumn(newValue) {
+      this.$store.commit("setTableFields", newValue);
+    },
   },
   methods: {
     // 选择图表类型
@@ -161,11 +168,23 @@ export default {
       const { commit } = this.$store;
       if (this.currentChart === 0) {
         // 现在图表是数据表, 则清除其他图表的数组
-        commit("setArr2", ["请拖入左侧字段"]);
-        commit("setArr3", ["请拖入左侧字段"]);
+        commit("setArr2", [
+          {
+            column_name: "请拖入左侧字段",
+          },
+        ]);
+        commit("setArr3", [
+          {
+            column_name: "请拖入左侧字段",
+          },
+        ]);
       } else {
         // 现在图表是其他图表, 则清除数据表的数组
-        commit("setArr1", ["请拖入左侧字段"]);
+        commit("setArr1", [
+          {
+            column_name: "请拖入左侧字段",
+          },
+        ]);
       }
     },
     // 右到左去重
@@ -195,6 +214,12 @@ export default {
         document.getElementsByClassName("x")[0].classList.remove("active");
         document.getElementsByClassName("y")[0].classList.remove("active");
       }
+    },
+    // 改变字段的计算类型
+    changeComputedType(obj) {
+      const { type, index } = obj;
+      this.tableColumn[index].type = type;
+      this.$store.commit("setTableFields", this.tableColumn);
     },
   },
 };

@@ -207,7 +207,7 @@ export default {
 .title {
   border-right: 1px solid #e8eaed;
   padding: 0px 25px 0px 10px;
-  font-size: 13px;
+  font-size: 12px;
 }
 .field {
   display: flex;

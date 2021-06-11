@@ -60,7 +60,6 @@ export default {
         // 过滤不需要的字段
         return item.column_name !== "请拖入左侧字段";
       });
-      console.log(this.filterArr1);
       this.getData();
     },
     currentPage() {
